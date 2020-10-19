@@ -4,7 +4,7 @@ import rds_config
 import pymysql
 
 #rds settings used 
-rds_host = "rds-instance-endpoint" 
+rds_host = "mysqlfoobar.cp3f9znc6mlc.us-east-2.rds.amazonaws.com" 
 usrname = rds_config.db_username 
 password = rds_config.db_password 
 db_name = rds_config.db_name
@@ -27,14 +27,19 @@ def handler(event, context):
     The below function fetches content from MySQL RDS instance
     """
 
-    item_count = 0
+    # item_count = 0
+    item_count = 4
     
     with conn.cursor() as cur:
-        cur.execute("create table tennisPlayers ( playerID int NOT NULL, Name varchar(255) NOT NULL, Points int, PRIMARY KEY (playerID ))") 
-        cur.execute('insert into tennisPlayers (EmpID, Name) values(1, "Roger", 50 )') 
-        cur.execute('insert into tennisPlayers (EmpID, Name) values(2, "Ben", 85)') 
-        cur.execute('insert into tennisPlayers (EmpID, Name) values(3, "Mark", 100)') 
-        cur.execute('insert into tennisPlayers (EmpID, Name) values(3, "Rafael", 120)') 
+        # cur.execute("create table tennisPlayers ( playerID int NOT NULL, Name varchar(255) NOT NULL, Points int, PRIMARY KEY (playerID ))") 
+    
+        cur.execute('delete from tennisPlayers')
+        
+        cur.execute('insert into tennisPlayers (playerID, Name, Points) values(1, "Roger", 50 )') 
+        cur.execute('insert into tennisPlayers (playerID, Name, Points) values(2, "Ben", 85)') 
+        cur.execute('insert into tennisPlayers (playerID, Name, Points) values(3, "Mark", 100)') 
+        cur.execute('insert into tennisPlayers (playerID, Name, Points) values(4, "Rafael", 120)') 
+         
         conn.commit()
 
-    return "Added %d items to tennisPlayers RDS MySQL table" %(item_count)
+    return "Added %d items to tennisPlayers RDS MySQL table" % (item_count)
