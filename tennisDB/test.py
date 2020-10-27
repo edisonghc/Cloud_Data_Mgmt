@@ -1,10 +1,23 @@
-file_path = "./SQL_Scripts/create_players_table.sql"
-with open(file_path, 'r', encoding='utf8', errors='ignore') as f:
-    for line in f:
-        print(line)
-        
-        # cur.execute(line) 
-        # conn.commit()
+import os
 
-# for file in sql_scripts_folder:
-#   with ...
+sql_filenames = os.listdir("./SQL_Scripts")
+for file_name in sql_filenames:
+    if(file_name.startswith("create")):
+        file_path =  os.path.join(".","SQL_Scripts",file_name)
+        with open(file_path, 'r', encoding='utf8', errors='ignore') as f:
+            logger.info(f'Reading file: {file_path}')
+            for line in f:
+                cur.execute(line) 
+                logger.info(row)
+
+for file_name in sql_filenames:
+    if(file_name.startswith("insert")):
+        file_path =  os.path.join(".","SQL_Scripts",file_name)
+        with open(file_path, 'r', encoding='utf8', errors='ignore') as f:
+            logger.info(f'Reading file: {file_path}')
+            for line in f:
+                cur.execute(line) 
+                logger.info(row)
+
+
+# conn.commit()

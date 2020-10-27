@@ -2,6 +2,7 @@ import sys
 import logging
 import rds_config
 import pymysql
+import os
 
 #rds settings used 
 rds_host = "mysqlfoobar.cp3f9znc6mlc.us-east-2.rds.amazonaws.com" 
@@ -27,21 +28,37 @@ def handler(event, context):
     The below function fetches content from MySQL RDS instance
     """
 
-    # item_count = 0
-    item_count = 4
+    create_count = 0
+    item_count = 0
     
     with conn.cursor() as cur:
-        # TO_DO
-        
-        # cur.execute("create table tennisPlayers ( playerID int NOT NULL, Name varchar(255) NOT NULL, Points int, PRIMARY KEY (playerID ))") 
-    
-        cur.execute('delete from tennisPlayers')
-        
-        cur.execute('insert into tennisPlayers (playerID, Name, Points) values(1, "Roger", 50 )') 
-        cur.execute('insert into tennisPlayers (playerID, Name, Points) values(2, "Ben", 85)') 
-        cur.execute('insert into tennisPlayers (playerID, Name, Points) values(3, "Mark", 100)') 
-        cur.execute('insert into tennisPlayers (playerID, Name, Points) values(4, "Rafael", 120)') 
-         
+      
+
+        sql_filenames = os.listdir("./SQL_Scripts")
+        for file_name in sql_filenames:
+            if(file_name.startswith("create")):
+                file_path =  os.path.join(".","SQL_Scripts",file_name)
+                with open(file_path, 'r', encoding='utf8', errors='ignore') as f:
+                    logger.info(f'Reading file: {file_path}')
+                    for line in f:
+                        cur.execute(line) 
+                        # logger.info(line)
+                create_count += 1
+        logger.info(f'Created {create_count} tables')
+
+        for file_name in sql_filenames:
+            item_count = 0
+            if(file_name.startswith("insert")):
+                file_path =  os.path.join(".","SQL_Scripts",file_name)
+                with open(file_path, 'r', encoding='utf8', errors='ignore') as f:
+                    logger.info(f'Reading file: {file_path}')
+                    for line in f:
+                        cur.execute(line)
+                        item_count += 1
+                        # logger.info(line)
+                logger.info(f'Added {create_count} items to the table')
+
+
         conn.commit()
 
-    return "Added %d items to tennisPlayers RDS MySQL table" % (item_count)
+    return "Successfully executed the queries in ./SQL_Scripts"
